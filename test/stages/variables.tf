@@ -1,9 +1,11 @@
 
 # Resource Group Variables
-variable "resource_group_name" {
-  type        = string
-  description = "Existing resource group where the IKS cluster will be provisioned."
-}
+##GV 
+
+# variable "resource_group_name" {
+#   type        = string
+#   description = "Existing resource group where the IKS cluster will be provisioned."
+# }
 
 variable "ibmcloud_api_key" {
   type        = string
@@ -88,3 +90,16 @@ variable "kubeseal_namespace" {
 
 variable "cp_entitlement_key" {
 }
+
+##GV
+variable "login_token" {
+
+}
+
+
+variable "pullsecret_name" {
+  type        = string
+  description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
+  default     = "ibm-entitlement-key"
+}
+

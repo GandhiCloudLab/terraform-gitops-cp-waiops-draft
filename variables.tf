@@ -79,3 +79,15 @@ variable "server_name" {
   description = "The name of the server"
   default     = "default"
 }
+
+variable "entitlement_key" {
+  type        = string
+  description = "The entitlement key used to access the CP4I images in the container registry. Visit https://myibm.ibm.com/products-services/containerlibrary to get the key"
+  sensitive   = true
+}
+
+variable "pullsecret_name" {
+  type        = string
+  description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
+  default     = "ibm-entitlement-key"
+}
