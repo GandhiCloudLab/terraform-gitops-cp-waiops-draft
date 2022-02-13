@@ -131,16 +131,16 @@ terraform apply --auto-approve
 This command will provision resources in mentioned cluster.
 
 
-## 5. Open ArcoCD
+## 5. Open ArgoCD
 
-1. Open the ArcoCD
+1. Open the ArgoCD
 
 <img src="images/argo-menu.png">
 
 2. ArgoCD Credentials
 
-UserName : admin
-Passowrd : Is available in  `.test/stages/.tmp/argocd-password.val`
+- UserName : admin
+- Passowrd : Is available in  `.test/stages/.tmp/argocd-password.val`
 
 3. View the Sync details of all the application created.
 
