@@ -144,10 +144,10 @@ This command will provision resources in mentioned cluster.
 
 3. View the Sync details of all the application created.
 
-## 4. Destroying the module
+## 6. Destroying the module
 
 
-### 4.1 Terraform Destroy
+### 6.1 Terraform Destroy
 
 1. Goto the `test/stages` directory
 
@@ -158,7 +158,7 @@ terraform destroy
 ```
 This will remove all the ArgoCD deployments and github repo created by the automation.
 
-### 4.2 OpenShift Cleanup
+### 6.2 OpenShift Cleanup
 
 After terraform destroy is completed, to make OpenShift cluster reusable further cleaning can be done using following steps in OpenShift console.
 
@@ -190,7 +190,7 @@ ex:
 sh ./files/1-delete-stuck-namespaces.sh cp4waiops
 ```
 
-### 4.3 Delete Temp files
+### 6.3 Delete Temp files
 
 1. Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
