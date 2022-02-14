@@ -6,15 +6,15 @@ This documentation demonstrates the steps to test the developed IBM SWE gitops m
 
 Update the below properties in `/test/stages/terraform.tfvars` file .
 
-### 1.1 ibmcloud_api_key
+#### 1.1 ibmcloud_api_key
 
 Generate the key from  https://cloud.ibm.com/iam/apikeys
 
-### 1.2 cp_entitlement_key
+#### 1.2 cp_entitlement_key
 
 Get the entitlement key from  https://myibm.ibm.com/products-services/containerlibrary
 
-### 1.3 server_url
+#### 1.3 server_url
 
 The server where you are going to apply the terraform module.
 
@@ -25,31 +25,31 @@ oc login --token=sha256~62DwshrR-4tR2w_..............i8dx8 --server=https://c117
 ```
 Here the `server_url` is `https://c117-e.us-south.containers.cloud.ibm.com:11111`
 
-### 1.4 login_token
+#### 1.4 login_token
 
 From the above exmaple, the `login_token` is `sha256~62DwshrR-4tR2w_..............i8dx8`
 
-### 1.5 namespace
+#### 1.5 namespace
 
 The namespace could be `cp4waiops` where this module is going to run.
 
-### 1.6 git_org
+#### 1.6 git_org
 
 Create new org in github and give the value. 
 
 Click the `New Organization` button in https://github.com/settings/organizations  to create new Org.
 
-### 1.7 git_username
+#### 1.7 git_username
 
 You github user name
 
-### 1.8 git_token
+#### 1.8 git_token
 
 You github Personal access token.
 
 Click the `Generate New Token` button in https://github.com/settings/tokens to create token
 
-### 1.9 git_repo
+#### 1.9 git_repo
 
 Give any non existing github repo name. This will be created while running this module.
 
@@ -65,9 +65,9 @@ ln -s ../.. module
 
 yq is needed to run locally.
 
-1. Make sure that you are the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
+1. Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
-2. Install yq by running the below command
+2. Run the below command to `yq`
 
 ```
 brew install yq 
@@ -80,7 +80,7 @@ cp /usr/local/bin/yq ./test/stages/bin2/
 cp /usr/local/bin/yq ./test/stages/bin2/yq4
 ```
 
-4. Run the below command to create yq4 from yq
+4. Run the below command to create `yq4` from `yq`
 
 ```
 cp /usr/local/bin/yq ./test/stages/bin2/yq4
@@ -88,15 +88,15 @@ cp /usr/local/bin/yq ./test/stages/bin2/yq4
 
 5. Run yq4
 
-Run the yq4 to test whether is there. Make sure it has execute permission.
+Run the `yq4` to test whether it is copied. Make sure it has execute permission.
 
 ```
-/test/stages/bin2/yq4
+./test/stages/bin2/yq4
 ```
 
 ## 3. Install kubeseal
 
-Make sure that you are the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
+Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
 Run the below command one by one.
 
@@ -114,7 +114,7 @@ cp /usr/local/bin/kubeseal ./test/stages/bin/
 ```
 terraform init
 ```
-This will download all required modules in .terraform directory inside test/stages.
+This will download all required modules in `.terraform` directory inside `test/stages`.
 
 3. Run the below command
 
