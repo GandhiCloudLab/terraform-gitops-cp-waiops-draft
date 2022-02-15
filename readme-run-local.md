@@ -171,6 +171,14 @@ sealed-secret
 cp4waiops (namespace of the module)
 ```
 
+```
+oc delete ns openshift-pipelines
+oc delete ns openshift-pipelines
+oc delete ns sealed-secret
+oc delete ns cp4waiops
+```
+
+
 2. Goto `Operators > Installed Operators` and Uninstall the below operators installed by this module
 
 ```
