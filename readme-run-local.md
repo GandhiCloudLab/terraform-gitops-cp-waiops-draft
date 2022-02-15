@@ -139,12 +139,11 @@ This command will provision resources in mentioned cluster.
 
 2. ArgoCD Credentials
 
-UserName : 
-```
-admin
-```
+- UserName : admin
+- Passowrd : Is stored in  `./test/stages/.tmp/argocd-password.val`
 
-Passowrd : 
+Run the below command to print the password.
+
 ```
 cat ./test/stages/.tmp/argocd-password.val
 ```
