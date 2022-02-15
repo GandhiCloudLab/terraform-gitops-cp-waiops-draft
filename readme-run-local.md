@@ -139,8 +139,15 @@ This command will provision resources in mentioned cluster.
 
 2. ArgoCD Credentials
 
-- UserName : admin
-- Passowrd : Is available in  `.test/stages/.tmp/argocd-password.val`
+UserName : 
+```
+admin
+```
+
+Passowrd : 
+```
+cat ./test/stages/.tmp/argocd-password.val
+```
 
 3. View the Sync details of all the application created.
 
@@ -205,8 +212,8 @@ sh ./files/1-delete-stuck-namespaces.sh cp4waiops
 2. Run the below command to delete temp folders and files.
 
 ```
-rm -rfd ./.terraform/
-rm -rfd ./.tmp/
-rm terraform.tfstate
-rm terraform.tfstate.backup
+rm -rfd ./test/stages/.terraform/
+rm -rfd ./test/stages/.tmp/
+rm ./test/stages/terraform.tfstate
+rm ./test/stages/terraform.tfstate.backup
 ```
