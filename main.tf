@@ -4,6 +4,10 @@ locals {
   yaml_dir    = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
   service_url = "http://${local.name}.${var.namespace}"
   values_content = {
+    cp_waiops_namespace = var.namespace
+    cp_waiops_imagePullSecret = var.pullsecret_name
+    cp_waiops_storageClass = "ibmc-file-gold-gid"
+    cp_waiops_storageClassLargeBlock = "ibmc-file-gold-gid"    
   }
   layer              = "services"
   type               = "operators"

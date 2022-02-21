@@ -20,5 +20,3 @@ cluster_type="openshift"
 cp_entitlement_key="eyJhbGciOiJIUzI1NiJ9.eyJpc3M-------------------DAy8MTLepjy5Hewr-e4Zog"
 
 pullsecret_name="ibm-entitlement-key"
-
-

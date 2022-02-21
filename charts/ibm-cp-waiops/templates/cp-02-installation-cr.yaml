@@ -2,9 +2,11 @@ apiVersion: orchestrator.aiops.ibm.com/v1alpha1
 kind: Installation
 metadata:
   name: ibm-cp-watson-aiops
-  namespace: cp4waiops
+  namespace: {{ .Values.cp_waiops_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: “-50”
 spec:
-  imagePullSecret: ibm-entitlement-key
+  imagePullSecret: {{ .Values.cp_waiops_imagePullSecret }}
   license:
     accept: true
   pakModules:
@@ -17,5 +19,5 @@ spec:
   - name: connection
     enabled: false
   size: small
-  storageClass: ibmc-file-gold-gid
-  storageClassLargeBlock: ibmc-file-gold-gid
+  storageClass: {{ .Values.cp_waiops_storageClass }}
+  storageClassLargeBlock: {{ .Values.cp_waiops_storageClassLargeBlock }}
