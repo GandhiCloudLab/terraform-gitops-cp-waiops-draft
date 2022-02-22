@@ -3,11 +3,13 @@ locals {
   bin_dir     = module.setup_clis.bin_dir
   yaml_dir    = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
   service_url = "http://${local.name}.${var.namespace}"
+    tmp_dir      = "${path.cwd}/.tmp/tmp"
+
   values_content = {
     cp_waiops_namespace = var.namespace
     cp_waiops_imagePullSecret = var.pullsecret_name
     cp_waiops_storageClass = "ibmc-file-gold-gid"
-    cp_waiops_storageClassLargeBlock = "ibmc-file-gold-gid"    
+    cp_waiops_storageClassLargeBlock = "ibmc-file-gold-gid"
   }
   layer              = "services"
   type               = "operators"
@@ -88,6 +90,19 @@ resource "null_resource" "setup_gitops" {
     environment = {
       GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
       GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+}
+
+resource null_resource run_post_install {
+  depends_on = [null_resource.setup_gitops]
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/run-post-install.sh '${var.namespace}' '${local.tmp_dir}'"
+
+    environment = {
+      IBMCLOUD_API_KEY = var.ibmcloud_api_key
+      NAMESPACE = var.namespace
     }
   }
 }
