@@ -17,7 +17,7 @@ function processAiopsanalyticsorchestrators() {
   echo "1. Verify the creation of the resource : aiopsanalyticsorchestrators.ai.ir.aiops.ibm.com/aiops"
   echo "-----------------------------------"
 
-  while [[ ${RESOURCE_FOUND} == "false" && $LOOP_COUNT < $MAX_LOOP_COUNT ]]; do
+  while [[ ${RESOURCE_FOUND} == "false" && $LOOP_COUNT -lt $MAX_LOOP_COUNT ]]; do
       LOOP_COUNT=$((LOOP_COUNT+1))
       echo "Trying for $LOOP_COUNT / $MAX_LOOP_COUNT."
 

@@ -91,3 +91,9 @@ variable "pullsecret_name" {
   description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
   default     = "ibm-entitlement-key"
 }
+
+variable "ibmcloud_api_key" {
+  type        = string
+  description = "The api key for IBM Cloud access"
+  default     = "default"
+}
