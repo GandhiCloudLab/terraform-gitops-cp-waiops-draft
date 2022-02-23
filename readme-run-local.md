@@ -67,47 +67,60 @@ yq is needed to run locally.
 
 1. Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
-2. Run the below command to `yq`
+2. Create the below folders by running the below commands
+
+```
+mkdir test/stages/bin
+mkdir test/stages/bin2
+```
+
+3. Run the below command to install `yq`
 
 ```
 brew install yq 
 ```
 
-3. Run the below command to copy the `yq` executable inside `test/stages/bin2`
+4. Run the below command to copy the `yq` and `yq4` executable inside `test/stages/bin2`
 
 ```
-cp /usr/local/bin/yq ./test/stages/bin2/
-cp /usr/local/bin/yq ./test/stages/bin2/yq4
-```
-
-4. Run the below command to create `yq4` from `yq`
-
-```
-cp /usr/local/bin/yq ./test/stages/bin2/yq4
+sudo cp /usr/local/bin/yq ./test/stages/bin2/
+sudo cp /usr/local/bin/yq ./test/stages/bin2/yq4
 ```
 
 5. Run yq4
 
-Run the `yq4` to test whether it is copied. Make sure it has execute permission.
+Run the `yq4` to test whether it is copied. 
 
 ```
 ./test/stages/bin2/yq4
 ```
 
+6. Make sure it has execute permission.
+
 ## 3. Install kubeseal
 
 Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
-Run the below command one by one.
+1, Run the below command to install `kubeseal`
 
 ```
 brew install kubeseal
-cp /usr/local/bin/kubeseal ./test/stages/bin/
+sudo cp /usr/local/bin/kubeseal ./test/stages/bin/
+```
+
+2, Run the below command to copy `kubeseal`
+
+```
+sudo cp /usr/local/bin/kubeseal ./test/stages/bin/
 ```
 
 ## 4. Run Terraform Module
 
 1. Goto the `test/stages` directory
+
+```
+cd  test/stages
+```
 
 2. Run the below command
 

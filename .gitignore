@@ -62,3 +62,23 @@ datacollector
 # j2se_datacollector.tgz
 deployment/03-mcm-dev/build/a.txt
 deployment/03-mcm-dev/build/test.sh
+
+### software everywhere - terraform
+/.terraform/*
+/test/stages/.tmp/*
+/test/stages/bin/*
+/test/stages/bin2/*
+/test/stages/gh_2.5.0_macOS_amd64/*
+/test/stages/gitops/*
+/test/stages/module
+/test/stages/module/*
+/test/stages/tmp/*
+/test/stages/.kubeconfig
+/.terraform.lock.hcl
+/test/stages/cert.crt
+/test/stages/cert.key
+/test/stages/external-tls-secret.yaml
+/test/stages/git_repo
+/test/stages/git_token
+/test/stages/gitops-output.json
+/test/stages/terraform.tfstate
