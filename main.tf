@@ -1,18 +1,25 @@
 locals {
   name        = "ibm-cp-waiops"
   bin_dir     = module.setup_clis.bin_dir
-  yaml_dir    = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
+  chart_dir = "${path.module}/charts/${local.name}"
+  yaml_dir    = "${path.cwd}/.tmp/${local.name}/charts/${local.name}-catalog"
   service_url = "http://${local.name}.${var.namespace}"
-    tmp_dir      = "${path.cwd}/.tmp/tmp"
 
-  values_content = {
+  values_content_catalog = {
+    cp_waiops_namespace = var.namespace
+  }
+  values_content_subscription = {
+    cp_waiops_namespace = var.namespace
+  }
+  values_content_instance = {
     cp_waiops_namespace = var.namespace
     cp_waiops_imagePullSecret = var.pullsecret_name
     cp_waiops_storageClass = "ibmc-file-gold-gid"
     cp_waiops_storageClassLargeBlock = "ibmc-file-gold-gid"
   }
+  
   layer              = "services"
-  type               = "operators"
+  type               = "instances"
   application_branch = "main"
   namespace          = var.namespace
   pullsecret_name    = var.pullsecret_name
@@ -22,6 +29,8 @@ locals {
 module "setup_clis" {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 }
+
+##### --------- --------- ---------  Pre Install  --------- --------- ---------  
 
 module pull_secret {
   source = "github.com/cloud-native-toolkit/terraform-gitops-pull-secret"
@@ -49,26 +58,28 @@ module "service_account" {
   server_name = var.server_name
 }
 
-resource "null_resource" "create_yaml" {
+##### --------- --------- ---------  Catalog  --------- --------- ---------  
+
+resource "null_resource" "create_yaml_catalog" {
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-yaml.sh '${local.name}' '${local.yaml_dir}'"
+    command = "${path.module}/scripts/create-yaml.sh '${local.name}-catalog'  '${local.chart_dir}-catalog' '${local.yaml_dir}-catalog'"
 
     environment = {
-      VALUES_CONTENT = yamlencode(local.values_content)
+      VALUES_CONTENT = yamlencode(local.values_content_catalog)
     }
   }
 }
 
-resource "null_resource" "setup_gitops" {
-  depends_on = [null_resource.create_yaml]
+resource "null_resource" "setup_gitops_catalog" {
+  depends_on = [null_resource.create_yaml_catalog]
 
   triggers = {
-    name            = local.name
+    name            = "${local.name}-catalog"
     namespace       = var.namespace
-    yaml_dir        = local.yaml_dir
+    yaml_dir        = "${local.yaml_dir}-catalog"
     server_name     = var.server_name
-    layer           = local.layer
-    type            = local.type
+    layer           = "infrastructure"
+    type            = ""
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
     bin_dir         = local.bin_dir
@@ -92,13 +103,121 @@ resource "null_resource" "setup_gitops" {
       GITOPS_CONFIG   = self.triggers.gitops_config
     }
   }
+
 }
 
-resource null_resource run_post_install {
-  depends_on = [null_resource.setup_gitops]
+
+##### --------- --------- ---------  Subscription  --------- --------- ---------  
+
+
+resource "null_resource" "create_yaml_subscription" {
+    depends_on = [null_resource.setup_gitops_catalog]
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/run-post-install.sh '${var.namespace}' '${local.tmp_dir}'"
+    command = "${path.module}/scripts/create-yaml.sh '${local.name}-subscription'  '${local.chart_dir}-subscription' '${local.yaml_dir}-subscription'"
+
+    environment = {
+      VALUES_CONTENT = yamlencode(local.values_content_subscription)
+    }
+  }
+}
+
+resource "null_resource" "setup_gitops_subscription" {
+  depends_on = [null_resource.create_yaml_subscription]
+
+  triggers = {
+    name            = "${local.name}-subscription"
+    namespace       = var.namespace
+    yaml_dir        = "${local.yaml_dir}-subscription"
+    server_name     = var.server_name
+    layer           = "services"
+    type            = "operators"
+    git_credentials = yamlencode(var.git_credentials)
+    gitops_config   = yamlencode(var.gitops_config)
+    bin_dir         = local.bin_dir
+  }
+
+  provisioner "local-exec" {
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+
+}
+
+
+##### --------- --------- ---------  Instance  --------- --------- ---------  
+
+
+resource "null_resource" "create_yaml_instance" {
+    depends_on = [null_resource.setup_gitops_subscription]
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/create-yaml.sh '${local.name}-instance'  '${local.chart_dir}-instance' '${local.yaml_dir}-instance'"
+
+    environment = {
+      VALUES_CONTENT = yamlencode(local.values_content_subscription)
+    }
+  }
+}
+
+resource "null_resource" "setup_gitops_instance" {
+  depends_on = [null_resource.create_yaml_instance]
+
+  triggers = {
+    name            = "${local.name}-instance"
+    namespace       = var.namespace
+    yaml_dir        = "${local.yaml_dir}-instance"
+    server_name     = var.server_name
+    layer           = "services"
+    type            = "instances"
+    git_credentials = yamlencode(var.git_credentials)
+    gitops_config   = yamlencode(var.gitops_config)
+    bin_dir         = local.bin_dir
+  }
+
+  provisioner "local-exec" {
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+
+}
+
+
+##### --------- --------- ---------  Post Install  --------- --------- ---------  
+
+resource null_resource run_post_install {
+  depends_on = [null_resource.setup_gitops_instance]
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/run-post-install.sh"
 
     environment = {
       IBMCLOUD_API_KEY = var.ibmcloud_api_key

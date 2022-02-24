@@ -3,8 +3,6 @@ kind: Installation
 metadata:
   name: ibm-cp-watson-aiops
   namespace: {{ .Values.cp_waiops_namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: “-50”
 spec:
   imagePullSecret: {{ .Values.cp_waiops_imagePullSecret }}
   license:

@@ -1,6 +1,6 @@
 apiVersion: v2
-name: ibm-cp-waiops
-description: A Helm chart for in install the IBM Cloud Pak for Watson AIOps
+name: ibm-cp-waiops-instance
+description: A Helm chart for in install the IBM Cloud Pak for Watson AIOps - Instance
 type: application
 version: 0.1.1
 appVersion: "1.0"

@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
-MODULE_DIR=$(cd "${SCRIPT_DIR}/.."; pwd -P)
-
 GLOBAL_POD_VERIFY_STATUS=false
 
 function processAiopsanalyticsorchestrators() {

@@ -1,17 +1,23 @@
-resource null_resource write_outputs {
-  provisioner "local-exec" {
-    command = "echo \"$${OUTPUT}\" > gitops-output.json"
+module "gitops-bootstrap" {
+ source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git" 
 
-    environment = {
-      OUTPUT = jsonencode({
-        name        = module.gitops_cp_waiops.name
-        branch      = module.gitops_cp_waiops.branch
-        namespace   = module.gitops_cp_waiops.namespace
-        server_name = module.gitops_cp_waiops.server_name
-        layer       = module.gitops_cp_waiops.layer
-        layer_dir   = module.gitops_cp_waiops.layer == "infrastructure" ? "1-infrastructure" : (module.gitops_cp_waiops.layer == "services" ? "2-services" : "3-applications")
-        type        = module.gitops_cp_waiops.type
-      })
-    }
-  }
+ cluster_type = module.dev_cluster.platform.type_code
+ cluster_config_file = module.dev_cluster.config_file_path
+
+ ingress_subdomain = module.dev_cluster.platform.ingress
+
+ olm_namespace = module.olm.olm_namespace
+ operator_namespace = module.olm.target_namespace
+ 
+ gitops_repo_url = module.gitops.config_repo_url
+ git_username = module.gitops.config_username
+ git_token = module.gitops.config_token
+ 
+ bootstrap_path = module.gitops.bootstrap_path
+ bootstrap_prefix = var.bootstrap_prefix
+ 
+ sealed_secret_cert = module.cert.cert
+ sealed_secret_private_key = module.cert.private_key
+ 
+ create_webhook = true
 }

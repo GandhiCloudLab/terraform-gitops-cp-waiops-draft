@@ -89,6 +89,8 @@ variable "kubeseal_namespace" {
 }
 
 variable "cp_entitlement_key" {
+    type        = string
+  default     = "default"
 }
 
 ##GV
@@ -102,4 +104,3 @@ variable "pullsecret_name" {
   description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
   default     = "ibm-entitlement-key"
 }
-
