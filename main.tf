@@ -2,7 +2,7 @@ locals {
   name        = "ibm-cp-waiops"
   bin_dir     = module.setup_clis.bin_dir
   chart_dir = "${path.module}/charts/${local.name}"
-  yaml_dir    = "${path.cwd}/.tmp/${local.name}/charts/${local.name}-catalog"
+  yaml_dir    = "${path.cwd}/.tmp/${local.name}/charts/${local.name}"
   service_url = "http://${local.name}.${var.namespace}"
 
   values_content_catalog = {
@@ -79,7 +79,7 @@ resource "null_resource" "setup_gitops_catalog" {
     yaml_dir        = "${local.yaml_dir}-catalog"
     server_name     = var.server_name
     layer           = "infrastructure"
-    type            = ""
+    type            = "base"
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
     bin_dir         = local.bin_dir
