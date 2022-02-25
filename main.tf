@@ -169,7 +169,7 @@ resource "null_resource" "create_yaml_instance" {
     command = "${path.module}/scripts/create-yaml.sh '${local.name}-instance'  '${local.chart_dir}-instance' '${local.yaml_dir}-instance'"
 
     environment = {
-      VALUES_CONTENT = yamlencode(local.values_content_subscription)
+      VALUES_CONTENT = yamlencode(local.values_content_instance)
     }
   }
 }
