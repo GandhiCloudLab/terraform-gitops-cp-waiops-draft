@@ -53,15 +53,7 @@ Click the `Generate New Token` button in https://github.com/settings/tokens to c
 
 Give any non existing github repo name. This will be created while running this module.
 
-## 2. Create Symbolic link
-
-Create a symbolic link to current module code execution `stage2-xxxxxxxx.tf) `  by running following command in command prompt in `test/stages` directory:
-
-```
-ln -s ../.. module
-```
-
-## 3. Install yq4
+## 2. Install yq4
 
 yq is needed to run locally.
 
@@ -114,7 +106,17 @@ sudo cp /usr/local/bin/kubeseal ./test/stages/bin/
 sudo cp /usr/local/bin/kubeseal ./test/stages/bin/
 ```
 
-## 4. Run Terraform Module
+
+## 4. Create Symbolic link
+
+Create a symbolic link to current module code execution `stage2-xxxxxxxx.tf) `  by running following command in command prompt in `test/stages` directory:
+
+```
+ln -s ../.. module
+```
+
+
+## 5. Run Terraform Module
 
 1. Goto the `test/stages` directory
 
@@ -144,7 +146,7 @@ terraform apply --auto-approve
 This command will provision resources in mentioned cluster.
 
 
-## 5. Open ArgoCD
+## 6. Open ArgoCD
 
 1. Open the ArgoCD
 
@@ -163,10 +165,10 @@ cat ./test/stages/.tmp/argocd-password.val
 
 3. View the Sync details of all the application created.
 
-## 6. Destroying the module
+## 7. Destroying the module
 
 
-### 6.1 Terraform Destroy
+### 7.1 Terraform Destroy
 
 1. Goto the `test/stages` directory
 
@@ -177,7 +179,7 @@ terraform destroy
 ```
 This will remove all the ArgoCD deployments and github repo created by the automation.
 
-### 6.2 OpenShift Cleanup
+### 7.2 OpenShift Cleanup
 
 After terraform destroy is completed, to make OpenShift cluster reusable further cleaning can be done using following steps in OpenShift console.
 
@@ -217,7 +219,7 @@ ex:
 sh ./files/1-delete-stuck-namespaces.sh cp4waiops
 ```
 
-### 6.3 Delete Temp files
+### 7.3 Delete Temp files
 
 1. Make sure that you are in the root folder of this repo `terraform-gitops-cp-waiops-draft`. 
 
