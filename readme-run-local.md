@@ -109,15 +109,7 @@ sudo cp /usr/local/bin/kubeseal ./test/stages/bin/
 
 ## 4. Create Symbolic link
 
-Create a symbolic link to current module code execution `stage2-xxxxxxxx.tf) `  by running following command in command prompt in `test/stages` directory:
-
-```
-ln -s ../.. module
-```
-
-
-## 5. Run Terraform Module
-
+Create a symbolic link to current module code execution `stage2-xxxxxxxx.tf) `  by running following commands.
 1. Goto the `test/stages` directory
 
 ```
@@ -126,19 +118,30 @@ cd  test/stages
 
 2. Run the below command
 
+
+```
+ln -s ../.. module
+```
+
+## 5. Run Terraform Module
+
+Make sure you are in  `test/stages` directory:
+
+1. Run the below command
+
 ```
 terraform init
 ```
 This will download all required modules in `.terraform` directory inside `test/stages`.
 
-3. Run the below command
+2. Run the below command
 
 ```
 terraform plan
 ```
 This will make a dry-run and provides a list of resources to be added/destroyed and also any syntax/reference errors.
 
-4. Run the below command
+3. Run the below command
 
 ```
 terraform apply --auto-approve
