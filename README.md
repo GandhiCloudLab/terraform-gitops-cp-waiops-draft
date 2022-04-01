@@ -24,7 +24,6 @@ This module makes use of the output from other modules:
 - GitOps - https://github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap
 - GitOps - https://github.com/cloud-native-toolkit/terraform-tools-gitops
 - Namespace - https://github.com/cloud-native-toolkit/terraform-gitops-namespace
-- CP Catlog - https://github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs
 - etc
 
 
@@ -41,9 +40,9 @@ module "ibm-cp-waiops" {
   server_name = module.gitops.server_name
   namespace = module.gitops_namespace.name
   kubeseal_cert = module.gitops.sealed_secrets_cert
-  entitlement_key = var.cp_entitlement_key
-  pullsecret_name = var.pullsecret_name
-
+  entitlement_key = var.entitlement_key
+  cp_waiops_storageClass = var.cp_waiops_storageClass
+  cp_waiops_storageClassLargeBlock = var.cp_waiops_storageClassLargeBlock
 }
 ```
 
