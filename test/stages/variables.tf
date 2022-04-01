@@ -88,19 +88,30 @@ variable "kubeseal_namespace" {
   default = "sealed-secrets"
 }
 
-variable "cp_entitlement_key" {
-    type        = string
-  default     = "default"
-}
-
 ##GV
 variable "login_token" {
 
 }
 
-
-variable "pullsecret_name" {
+variable "server_name" {
   type        = string
-  description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
-  default     = "ibm-entitlement-key"
+  description = "The name of the server"
+  default     = "default"
+}
+
+variable "entitlement_key" {
+  type        = string
+  default     = "default"
+}
+
+variable "cp_waiops_storageClass" {
+  type        = string
+  description = "WAIOps Storage Class"
+  default     = "ibmc-file-gold-gid"
+}
+
+variable "cp_waiops_storageClassLargeBlock" {
+  type        = string
+  description = "WAIOps Storage Class Block"
+  default     = "ibmc-file-gold-gid"
 }

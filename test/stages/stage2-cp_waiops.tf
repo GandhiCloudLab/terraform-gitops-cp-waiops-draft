@@ -6,6 +6,7 @@ module "gitops_cp_waiops" {
   server_name = module.gitops.server_name
   namespace = module.gitops_namespace.name
   kubeseal_cert = module.gitops.sealed_secrets_cert
-  entitlement_key = var.cp_entitlement_key
-  pullsecret_name = var.pullsecret_name
+  entitlement_key = var.entitlement_key
+  cp_waiops_storageClass = var.cp_waiops_storageClass
+  cp_waiops_storageClassLargeBlock = var.cp_waiops_storageClassLargeBlock
 }

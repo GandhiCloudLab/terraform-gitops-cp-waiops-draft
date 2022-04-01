@@ -2,49 +2,6 @@
 
 GLOBAL_POD_VERIFY_STATUS=false
 
-function processAiopsanalyticsorchestrators() {
-  RESOURCE_COUNT=0
-  RESOURCE_FOUND=false
-
-  LOOP_COUNT=0
-  MAX_LOOP_COUNT=120
-
-  ## Verify whether aiopsanalyticsorchestrators got created, for every 5 seconds and retry for 120 times (10 minutes).
-  echo "-----------------------------------"
-  echo "1. Verify the creation of the resource : aiopsanalyticsorchestrators.ai.ir.aiops.ibm.com/aiops"
-  echo "-----------------------------------"
-
-  while [[ ${RESOURCE_FOUND} == "false" && $LOOP_COUNT -lt $MAX_LOOP_COUNT ]]; do
-      LOOP_COUNT=$((LOOP_COUNT+1))
-      echo "Trying for $LOOP_COUNT / $MAX_LOOP_COUNT."
-
-      RESOURCE_COUNT=$(oc get aiopsanalyticsorchestrators.ai.ir.aiops.ibm.com/aiops -n cp4waiops | wc -l)
-
-      if [[ $RESOURCE_COUNT -gt 1 ]]; 
-      then
-          RESOURCE_FOUND=true
-      else
-          RESOURCE_FOUND=false
-          sleep 5
-      fi
-  done
-
-  if [[ $RESOURCE_FOUND == "true" ]]; 
-  then
-      echo "Resource found (aiopsanalyticsorchestrators)"
-      echo "Patch the operator with the pullsecret"
-      oc patch aiopsanalyticsorchestrators.ai.ir.aiops.ibm.com/aiops -n ${NAMESPACE} -p '{"spec":{"pullSecrets":["ibm-aiops-pull-secret"]}}' --type=merge -n ${NAMESPACE}
-
-      echo " Sleep for 4 seconds"
-      sleep 4
-
-      echo " Delete Pods starts with the name : aiops-ir-analytics"
-      oc get pods  -n  ${NAMESPACE} --no-headers=true | awk '/aiops-ir-analytics/{print $1}' | xargs  kubectl delete -n  ${NAMESPACE} pod
-  else
-      echo "Resource Not found (aiopsanalyticsorchestrators)"
-  fi
-}
-
 ## Verify Pods Count in WAIOps Namespace
 function verifyAIOpsPodsCount() {
   echo "-----------------------------------"
@@ -85,6 +42,11 @@ function restartNginxPods() {
   IAF_STORAGE=$(oc get AutomationUIConfig -n $NAMESPACE -o jsonpath='{ .items[*].spec.storage.class }')
   oc delete -n $NAMESPACE AutomationUIConfig $AUTO_UI_INSTANCE
 
+  AUTO_UI_INSTANCE=$(oc get AutomationUIConfig -n $NAMESPACE --no-headers -o custom-columns=":metadata.name")
+  IAF_STORAGE=$(oc get AutomationUIConfig -n $NAMESPACE -o jsonpath='{ .items[*].spec.zenService.storageClass }')
+  ZEN_STORAGE=$(oc get AutomationUIConfig -n $NAMESPACE -o jsonpath='{ .items[*].spec.zenService.zenCoreMetaDbStorageClass }')
+  oc delete -n $NAMESPACE AutomationUIConfig $AUTO_UI_INSTANCE
+
 
 cat <<EOF | oc apply -f -
 apiVersion: core.automation.ibm.com/v1beta1
@@ -96,15 +58,18 @@ spec:
   description: AutomationUIConfig for cp4waiops
   license:
     accept: true
-  version: v1.0
-  storage:
-    class: $IAF_STORAGE
+  version: v1.3
   tls:
     caSecret:
       key: ca.crt
       secretName: external-tls-secret
     certificateSecret:
       secretName: external-tls-secret
+  zen: true
+  zenService:
+    storageClass: $IAF_STORAGE
+    zenCoreMetaDbStorageClass: $ZEN_STORAGE
+    iamIntegration: true      
 EOF
 
   echo "3.2 Replace the existing secret with a secret that contains the AI Manager ingress certificate."
@@ -125,14 +90,9 @@ EOF
 
   echo "3.3 Restart NGINX Pods"
 
-  # Scale down NGINX.
-  REPLICAS=$(oc get pods -l component=ibm-nginx -n $NAMESPACE  -o jsonpath='{ .items[*].metadata.name }' | wc -w)
-  ((REPLICAS=REPLICAS+0))
-  oc scale Deployment/ibm-nginx --replicas=0 -n $NAMESPACE 
-                                
-  # Scale up nginx. The new NGINX pods get the new certificate. It takes a few minutes for the NGINX pods to come back up.
-  sleep 3
-  oc scale Deployment/ibm-nginx --replicas=${REPLICAS} -n $NAMESPACE 
+  # Recreate nginx. The new NGINX pods get the new certificate. It takes a few minutes for the NGINX pods to come back up.
+  oc delete pod $(oc get po -n $NAMESPACE |grep ibm-nginx |awk '{print$1}') -n $NAMESPACE
+
 }
 
 
@@ -142,9 +102,6 @@ function postInstallMain() {
   echo "----------------------------------------------------------------------"-----------------------------------
   echo "WAIOps Post Install Activities"
   echo "---------------------------------------------------------------------------------------------------------"
-
-  ## Add the pull secret to the ibm-aiops-orchestrator operator.
-  processAiopsanalyticsorchestrators
 
   ## Verify Pods Count in WAIOps Namespace
   verifyAIOpsPodsCount

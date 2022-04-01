@@ -86,14 +86,21 @@ variable "entitlement_key" {
   sensitive   = true
 }
 
-variable "pullsecret_name" {
-  type        = string
-  description = "Name of the docker pull secret if needed - only needed if hitting docker rate limit"
-  default     = "ibm-entitlement-key"
-}
-
 variable "ibmcloud_api_key" {
   type        = string
   description = "The api key for IBM Cloud access"
   default     = "default"
 }
+
+variable "cp_waiops_storageClass" {
+  type        = string
+  description = "WAIOps Storage Class"
+  default     = "ibmc-file-gold-gid"
+}
+
+variable "cp_waiops_storageClassLargeBlock" {
+  type        = string
+  description = "WAIOps Storage Class Block"
+  default     = "ibmc-file-gold-gid"
+}
+

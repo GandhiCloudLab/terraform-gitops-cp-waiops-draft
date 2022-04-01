@@ -4,6 +4,7 @@ locals {
   chart_dir = "${path.module}/charts/${local.name}"
   yaml_dir    = "${path.cwd}/.tmp/${local.name}/charts/${local.name}"
   service_url = "http://${local.name}.${var.namespace}"
+  image_pullsecret_name = "ibm-entitlement-key"
 
   values_content_catalog = {
     cp_waiops_namespace = var.namespace
@@ -13,9 +14,9 @@ locals {
   }
   values_content_instance = {
     cp_waiops_namespace = var.namespace
-    cp_waiops_imagePullSecret = var.pullsecret_name
-    cp_waiops_storageClass = "ibmc-file-gold-gid"
-    cp_waiops_storageClassLargeBlock = "ibmc-file-gold-gid"
+    cp_waiops_imagePullSecret = var.image_pullsecret_name
+    cp_waiops_storageClass = var.cp_waiops_storageClass
+    cp_waiops_storageClassLargeBlock = var.cp_waiops_storageClassLargeBlock
   }
   
   layer              = "services"
@@ -43,19 +44,7 @@ module pull_secret {
   docker_username = "cp"
   docker_password = var.entitlement_key
   docker_server   = "cp.icr.io"
-  secret_name     = "ibm-entitlement-key"
-}
-
-module "service_account" {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-service-account"
-
-  gitops_config   = var.gitops_config
-  git_credentials = var.git_credentials
-  namespace       = var.namespace
-  name            = "aiops-topology-service-account"
-  pull_secrets    =  [var.pullsecret_name]
-
-  server_name = var.server_name
+  secret_name     = var.image_pullsecret_name
 }
 
 ##### --------- --------- ---------  Catalog  --------- --------- ---------  
@@ -158,9 +147,7 @@ resource "null_resource" "setup_gitops_subscription" {
 
 }
 
-
 ##### --------- --------- ---------  Instance  --------- --------- ---------  
-
 
 resource "null_resource" "create_yaml_instance" {
     depends_on = [null_resource.setup_gitops_subscription]

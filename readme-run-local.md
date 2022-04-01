@@ -234,7 +234,6 @@ rm -rfd ./test/stages/.tmp
 rm -rfd ./test/stages/tmp
 rm -rfd ./test/stages/gitops
 rm -rfd ./test/stages/gh_2.5.2_macOS_amd64
-rm -rfd ./test/stages/module
 
 rm ./test/stages/terraform.tfstate
 rm ./test/stages/terraform.tfstate.backup
@@ -244,6 +243,8 @@ rm ./test/stages/git_repo
 rm ./test/stages/git_token
 rm ./test/stages/gitops-output.json
 rm ./test/stages/.namespace
+
+rm ./test/stages/.module
 
 
 ```
